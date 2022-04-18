@@ -23,11 +23,7 @@ public class GameController {
         // 게임 초기화
         initGame(baseballGame);
         while(!baseballGame.isGameEnd()){
-            initCount(baseballGame);
-
-            //1. 숫자 입력받음
             doGame();
-
         }
         if(baseballGame.isWin()){
             System.out.print("3개의 숫자를 모두 맞히셨습니다! ");
@@ -37,6 +33,9 @@ public class GameController {
 
     // 게임을 한다.
     public void doGame(){
+        initCount(baseballGame);
+
+        //1. 숫자 입력받음
         String inputNum = baseballViewer.getNumberInput();
         // 사용자 예외 입력 체크
         if(gameValidator.checkUserInput(inputNum)){
@@ -50,7 +49,6 @@ public class GameController {
         baseballGame.setInputNumList(getBallList(inputNum));
 
         //2. 숫자 판별
-//            checkNum(inputNum, baseballGame);
         setBallResult(baseballGame);
 
         //3. 정답 판별 및 분기
@@ -102,7 +100,6 @@ public class GameController {
     public void initGame(BaseballGame baseballGame){
         userRestartNum = "";
         baseballGame.setRandomNumList(getRandomNumList());
-//        System.out.println("COM : " + baseballGame.getRandomNumList().toString());
         baseballGame.setGameEnd (false);
         baseballGame.setWin(false);
     }
@@ -118,21 +115,20 @@ public class GameController {
      */
     public List<String> getRandomNumList(){
         List<String> randomNumList = new ArrayList<>();
-//        List<String> numbers  =  new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9"));
         for(int i=0 ; i <3 ; i++) {
-            setRandomNum(randomNumList);
-//            int index = Randoms.pickNumberInRange(0, numbers.size() - 1);
-//            randomNumList.add(numbers.get(index));
-//            numbers.remove(index); // int 일 떈
+            String randomNum = getUniqueRandomNum(randomNumList);
+            randomNumList.add(randomNum);
         }
         return randomNumList;
     }
-    public void setRandomNum(List<String> randomNumList){
+
+    // 리스트에 포함되지 않은 랜덤 난수를 get
+    public String getUniqueRandomNum(List<String> randomNumList){
         int pickNum = 1;
         do {
             pickNum=Randoms.pickNumberInRange(1, 9);
         }while(randomNumList.contains(String.valueOf(pickNum)));
-        randomNumList.add(String.valueOf(pickNum));
+        return String.valueOf(pickNum);
     }
 
 

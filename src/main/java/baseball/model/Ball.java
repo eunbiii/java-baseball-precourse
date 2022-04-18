@@ -1,14 +1,12 @@
 package baseball.model;
 
-import java.util.ArrayList;
-
 /**
  * Created by eunbi on 2022/04/18
  */
 public class Ball {
-    String inputNum ;
-    String result;
-    int index ;
+    private String inputNum ;       // 입력 숫자
+    private int index ;             //입력 위치
+    private String result;          // 결과 (S:스트라이크, B:볼, N:낫싱)
 
     public Ball(String inputNum, int index) {
         this.inputNum = inputNum;

@@ -27,7 +27,6 @@ public class BaseballViewer {
      * @return inputNum
      */
     public String getNumberInput(){
-        //숫자를 입력해주세요 : 123
         System.out.print("숫자를 입력해주세요 : ");
         String num = Console.readLine();
         return num;
