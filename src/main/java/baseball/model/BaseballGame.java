@@ -12,6 +12,7 @@ public class BaseballGame {
     private int strikeNum =0;
     private int ballNum = 0;
     private boolean isGameEnd = false;
+    private boolean isWin = false;
     private List<String> randomNumList = new ArrayList<>();
     private List<Ball> inputNumList = new ArrayList<>();
 
@@ -31,7 +32,8 @@ public class BaseballGame {
     public void setStrikeNum(int strikeNum) {
         this.strikeNum = strikeNum;
     }
-    public void setStrikNumAdd(){
+
+    public void setStrikeNumAdd(){
         this.strikeNum++;
     }
 
@@ -42,6 +44,7 @@ public class BaseballGame {
     public void setBallNum(int ballNum) {
         this.ballNum = ballNum;
     }
+
     public void setBallNumAdd(){
         this.ballNum++;
     }
@@ -60,5 +63,13 @@ public class BaseballGame {
 
     public List<Ball> getInputNumList() {
         return inputNumList;
+    }
+
+    public boolean isWin() {
+        return isWin;
+    }
+
+    public void setWin(boolean win) {
+        isWin = win;
     }
 }

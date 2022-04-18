@@ -15,10 +15,10 @@ public class BaseballViewer {
             System.out.println("낫싱");
             return;
         }
-        if(strikeNum > 0 )
-            printStr = strikeNum +"스트라이크 ";
         if(ballNum > 0 )
-            printStr += ballNum +"볼";
+            printStr += ballNum +"볼 ";
+        if(strikeNum > 0 )
+            printStr += strikeNum +"스트라이크 ";
         System.out.println(printStr.trim());
     }
 

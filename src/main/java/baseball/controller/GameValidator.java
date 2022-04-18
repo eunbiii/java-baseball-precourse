@@ -18,7 +18,7 @@ public class GameValidator {
 
     public void checkBallNum (String ballNo){
         int ballNum = Integer.parseInt(ballNo);
-        if (ballNum<1 && ballNum > 9){
+        if (ballNum<1 || ballNum > 9){
             System.out.println("게임 종료");
             throw new IllegalArgumentException();
         }
@@ -31,6 +31,10 @@ public class GameValidator {
         for (String num : numList){
             checkBallNum(num);
         }
+    }
+
+    public boolean checkUserInput (String inputNum){
+        return inputNum.equalsIgnoreCase("1") || inputNum.equalsIgnoreCase("2");
     }
 
     public void setBallResult(Ball ball, List<String> numList) {
@@ -50,7 +54,6 @@ public class GameValidator {
     /**
      * 새로 시작할지 체크하는 함수
      * @return  새로 시작 여부
-     * @throws  Exception 잘못 입력한 경우
      */
     public boolean isPlayAgain(String inputNum){
         if ("1".equalsIgnoreCase(inputNum))

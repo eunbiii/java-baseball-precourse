@@ -13,10 +13,12 @@ import java.util.List;
  * Created by eunbi on 2022/04/18
  */
 public class GameController {
+    String userRestartNum = "";
     BaseballGame baseballGame = new BaseballGame();
     BaseballViewer baseballViewer = new BaseballViewer();
     GameValidator gameValidator = new GameValidator();
 
+    // 게임을 시작하지.
     public void startGame(){
         // 게임 초기화
         initGame(baseballGame);
@@ -24,20 +26,41 @@ public class GameController {
             initCount(baseballGame);
 
             //1. 숫자 입력받음
-            String inputNum = baseballViewer.getNumberInput();
-            gameValidator.checkInputNum(inputNum);
-            baseballGame.setInputNumList(getBallList(inputNum));
-
-            //2. 숫자 판별
-//            checkNum(inputNum, baseballGame);
-            setBallResult(baseballGame);
-
-            //3. 정답 판별 및 분기
-            baseballViewer.printGameResult(baseballGame.getStrikeNum(), baseballGame.getBallNum());
-            baseballGame.setGameEnd(baseballGame.getStrikeNum()==3 );
+            doGame();
 
         }
-        System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임 종료");
+        if(baseballGame.isWin()){
+            System.out.print("3개의 숫자를 모두 맞히셨습니다! ");
+        }
+        System.out.println("게임 종료");
+    }
+
+    // 게임을 한다.
+    public void doGame(){
+        String inputNum = baseballViewer.getNumberInput();
+        // 사용자 예외 입력 체크
+        if(gameValidator.checkUserInput(inputNum)){
+            userRestartNum = inputNum;
+            baseballGame.setGameEnd(true);
+            return;
+        }
+
+        //inputNum 체크 및 리스트로 변환
+        gameValidator.checkInputNum(inputNum);
+        baseballGame.setInputNumList(getBallList(inputNum));
+
+        //2. 숫자 판별
+//            checkNum(inputNum, baseballGame);
+        setBallResult(baseballGame);
+
+        //3. 정답 판별 및 분기
+        setResultEnd();
+    }
+
+    public void setResultEnd(){
+        baseballViewer.printGameResult(baseballGame.getStrikeNum(), baseballGame.getBallNum());
+        baseballGame.setGameEnd(baseballGame.getStrikeNum()==3 );
+        baseballGame.setWin(baseballGame.getStrikeNum()==3 );
     }
 
 
@@ -66,9 +89,9 @@ public class GameController {
     public void setResultNum(Ball ball , BaseballGame baseballGame){
         String result = ball.getResult();
         if("S".equalsIgnoreCase(result)){
-            baseballGame.setStrikNumAdd();
+            baseballGame.setStrikeNumAdd();
         }
-        if("N".equalsIgnoreCase(result)){
+        if("B".equalsIgnoreCase(result)){
             baseballGame.setBallNumAdd();
         }
     }
@@ -77,9 +100,11 @@ public class GameController {
 
     // 게임 초기화
     public void initGame(BaseballGame baseballGame){
+        userRestartNum = "";
         baseballGame.setRandomNumList(getRandomNumList());
 //        System.out.println("COM : " + baseballGame.getRandomNumList().toString());
         baseballGame.setGameEnd (false);
+        baseballGame.setWin(false);
     }
     // 카운트 초기화
     public void initCount(BaseballGame baseballGame){
@@ -93,14 +118,21 @@ public class GameController {
      */
     public List<String> getRandomNumList(){
         List<String> randomNumList = new ArrayList<>();
-        List<String> numbers  =  new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9"));
-
+//        List<String> numbers  =  new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9"));
         for(int i=0 ; i <3 ; i++) {
-            String pickNum = numbers.get(Randoms.pickNumberInRange(0, numbers.size() - 1));
-            randomNumList.add(pickNum);
-            numbers.remove(pickNum); // int 일 떈
+            setRandomNum(randomNumList);
+//            int index = Randoms.pickNumberInRange(0, numbers.size() - 1);
+//            randomNumList.add(numbers.get(index));
+//            numbers.remove(index); // int 일 떈
         }
         return randomNumList;
+    }
+    public void setRandomNum(List<String> randomNumList){
+        int pickNum = 1;
+        do {
+            pickNum=Randoms.pickNumberInRange(1, 9);
+        }while(randomNumList.contains(String.valueOf(pickNum)));
+        randomNumList.add(String.valueOf(pickNum));
     }
 
 
@@ -109,6 +141,14 @@ public class GameController {
      * @return  새로 시작 여부
      */
     public boolean isPlayAgain() {
+        if(userRestartNum.equalsIgnoreCase("1")){
+            return true;
+        }
+        if(userRestartNum.equalsIgnoreCase("2")){
+            return false;
+        }
+
+
         String inputNum = baseballViewer.getPlayAgain();
         return gameValidator.isPlayAgain(inputNum);
     }
