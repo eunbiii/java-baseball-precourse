@@ -1,10 +1,10 @@
 package baseball;
 
-import baseball.controller.BaseballGameController;
+import baseball.controller.GameController;
 
 public class Application {
-    public static void main(String[] args) throws Exception {
-    BaseballGameController baseballGameController = new BaseballGameController();
+    public static void main(String[] args) {
+        GameController baseballGameController = new GameController();
 
         do{
             baseballGameController.startGame();

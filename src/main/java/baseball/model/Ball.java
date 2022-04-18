@@ -10,15 +10,26 @@ public class Ball {
     String result;
     int index ;
 
-    public void setResult(ArrayList<String> numList) {
-        if (!numList.contains(inputNum)) {
-            this.result = "N";
-            return;
-        }
-        if(inputNum.equalsIgnoreCase(numList.get(index))){
-            this.result = "S";
-            return;
-        }
-        this.result = "B";
+    public Ball(String inputNum, int index) {
+        this.inputNum = inputNum;
+        this.index = index;
     }
+
+    public String getInputNum() {
+        return inputNum;
+    }
+
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
 }

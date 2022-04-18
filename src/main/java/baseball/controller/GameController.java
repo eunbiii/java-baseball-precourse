@@ -1,5 +1,6 @@
 package baseball.controller;
 
+import baseball.model.Ball;
 import baseball.model.BaseballGame;
 import baseball.view.BaseballViewer;
 import camp.nextstep.edu.missionutils.Randoms;
@@ -11,9 +12,10 @@ import java.util.List;
 /**
  * Created by eunbi on 2022/04/18
  */
-public class BaseballGameController {
+public class GameController {
     BaseballGame baseballGame = new BaseballGame();
     BaseballViewer baseballViewer = new BaseballViewer();
+    GameValidator gameValidator = new GameValidator();
 
     public void startGame(){
         // 게임 초기화
@@ -23,9 +25,12 @@ public class BaseballGameController {
 
             //1. 숫자 입력받음
             String inputNum = baseballViewer.getNumberInput();
+            gameValidator.checkInputNum(inputNum);
+            baseballGame.setInputNumList(getBallList(inputNum));
 
             //2. 숫자 판별
-            checkNum(inputNum, baseballGame);
+//            checkNum(inputNum, baseballGame);
+            setBallResult(baseballGame);
 
             //3. 정답 판별 및 분기
             baseballViewer.printGameResult(baseballGame.getStrikeNum(), baseballGame.getBallNum());
@@ -36,28 +41,44 @@ public class BaseballGameController {
     }
 
 
-    /**
-     * inputNum을 이용해 스트라이크와 볼의 개수를 파악
-     */
-    public void checkNum(String inputNum, BaseballGame baseballGame){
-        List<String> randomNums = baseballGame.getRandomNumList();
-        for(int i=0 ; i<3; i++){
-            String checkNum = inputNum.substring(i, i+1);
-            if(! randomNums.contains(checkNum))
-                continue;
-            if(checkNum.equalsIgnoreCase(randomNums.get(i))){
-                baseballGame.setStrikNumAdd();
-                continue;
-            }
+    //입력한 숫자를 볼 리스트로 반환한다.
+    public List<Ball> getBallList(String inputNum){
+        List<Ball> ballList = new ArrayList<>();
+        String[] numList = inputNum.split("");
+        for (int i=0; i<numList.length ;i ++){
+            ballList.add(new Ball(numList[i], i));
+        }
+        return ballList;
+    }
+
+    // 각 공의 결과값을 저장한다
+    public void setBallResult(BaseballGame baseballGame){
+        List<Ball> ballList = baseballGame.getInputNumList();
+        List<String> randomNumList = baseballGame.getRandomNumList();
+        for(Ball b : ballList){
+            gameValidator.setBallResult(b , randomNumList);
+        }
+        for(Ball b : ballList){
+            setResultNum(b, baseballGame);
+        }
+    }
+    // 결과값의 개수를 센다
+    public void setResultNum(Ball ball , BaseballGame baseballGame){
+        String result = ball.getResult();
+        if("S".equalsIgnoreCase(result)){
+            baseballGame.setStrikNumAdd();
+        }
+        if("N".equalsIgnoreCase(result)){
             baseballGame.setBallNumAdd();
         }
     }
 
 
+
     // 게임 초기화
     public void initGame(BaseballGame baseballGame){
         baseballGame.setRandomNumList(getRandomNumList());
-      //  System.out.println("COM : " + baseballGame.getRandomNumList().toString());
+//        System.out.println("COM : " + baseballGame.getRandomNumList().toString());
         baseballGame.setGameEnd (false);
     }
     // 카운트 초기화
@@ -86,14 +107,9 @@ public class BaseballGameController {
     /**
      * 새로 시작할지 체크하는 함수
      * @return  새로 시작 여부
-     * @throws  Exception 잘못 입력한 경우
      */
-    public boolean isPlayAgain() throws Exception{
+    public boolean isPlayAgain() {
         String inputNum = baseballViewer.getPlayAgain();
-        if ("1".equalsIgnoreCase(inputNum))
-            return true;
-        if("2".equalsIgnoreCase(inputNum))
-            return false;
-        throw new IllegalStateException();
+        return gameValidator.isPlayAgain(inputNum);
     }
 }
